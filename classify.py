@@ -81,4 +81,4 @@ def analysis(inputtext):
     neutralpercentage = str(percentage[0])
     positivepercentage = str(percentage[1])
     negativepercentage = str(percentage[2])
-    return "Neutral: " + neutralpercentage + "       "+"Positive: " + positivepercentage + "       " +"Negative: " + negativepercentage + "          "+ "Result: " + result 
+    return result, neutralpercentage, positivepercentage, negativepercentage
