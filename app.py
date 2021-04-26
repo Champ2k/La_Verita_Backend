@@ -2,12 +2,12 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from flask import Flask, request, jsonify, render_template
-from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
+# from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 from flask_cors import CORS
 from flask_pymongo import PyMongo
 from classify import analysis
+from analyze import filtered_input_vax_base_on_tweets_timeline
 import threading
-
 
 
 app = Flask(__name__)
@@ -58,6 +58,11 @@ def add_header(response):
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '-1'
     return response
+
+@app.route("/api/analyze", methods=['GET'])
+def analyze():
+    data = filtered_input_vax_base_on_tweets_timeline('sinovac')
+    return  data
     
 # def ClassifyView():
 
