@@ -13,6 +13,9 @@ from nltk.stem.porter import PorterStemmer # Root word like: loved->love
 from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
 
+max_words = 5000
+max_len = 200
+
 # Use to cleaning data.
 def depure_data(data):
 
@@ -67,15 +70,15 @@ def sentiment_analysis(tokenizer, text, best_model):
     result = sentiment_2[list_percent.index(max(list_percent))]
     return result, list_percent
 
-train = pd.read_csv("data/vax_tweets_sentiment_shuff3.csv",header=0)
-max_words = 5000
-max_len = 200
+def analysis(inputtext):
+    # load tokenizer
+    with open('tokenizer/tokenizer2_mix.pickle', 'rb') as handle:
+        tokenizer = pickle.load(handle)
 
-# load tokenizer
-with open('tokenizer/tokenizer2_mix.pickle', 'rb') as handle:
-    tokenizer = pickle.load(handle)
-
-best_model = keras.models.load_model("model/best_model5_mix_suff.hdf5")
-text = input("Type something ")
-result, percentage = sentiment_analysis(tokenizer, text, best_model)
-print(result, percentage)
+    best_model = keras.models.load_model("model/best_model5_mix_suff.hdf5")
+    text = inputtext
+    result, percentage = sentiment_analysis(tokenizer, text, best_model)
+    neutralpercentage = str(percentage[0])
+    positivepercentage = str(percentage[1])
+    negativepercentage = str(percentage[2])
+    return "Neutral: " + neutralpercentage + "       "+"Positive: " + positivepercentage + "       " +"Negative: " + negativepercentage + "          "+ "Result: " + result 

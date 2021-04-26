@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Reusable Form Demo</title>
+  </head>
+  <body>
+    <form action="{{ url_for("hello")}}" method="post">
+        <label for="inputtext">Input Text:</label>
+        <input type="text" id="inputtext" name="inputText" placeholder="text">
+        <button type="submit">Analysis</button>
+  </body>
+</html>
