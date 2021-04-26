@@ -5,6 +5,10 @@
     <title>Analysis</title>
   </head>
   <body>
+    <form action="{{ url_for("hello")}}" method="post">
+      <label for="inputtext">Input Text:</label>
+      <input type="text" id="inputtext" name="inputText" placeholder="text">
+      <button type="submit">Analysis</button>
     <p id="result">{{result}}</p>
     <p id="neutral">{{neutral}}</p>
     <p id="positive">{{positive}}</p>

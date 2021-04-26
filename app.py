@@ -58,11 +58,7 @@ def add_header(response):
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '-1'
     return response
-
-if __name__ == '__main__':
-    app.debug = True
-    app.run(threaded=True)
-
+    
 # def ClassifyView():
 
 # star = mongo.db.stars
@@ -74,6 +70,9 @@ if __name__ == '__main__':
 #   return jsonify({'result' : output})
 
 
+if __name__ == '__main__':
+    app.debug = True
+    app.run(threaded=True)
 
 # books = [
 #     {'id': 0,
