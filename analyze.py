@@ -11,7 +11,7 @@ import json
 
 df = pd.read_csv("data/vax_tweets_sentiment.csv" ,header=0)
 
-all_vax = ['covaxin', 'sinopharm', 'sinovac', 'moderna', 'pfizer', 'biontech', 'oxford', 'astrazeneca', 'sputnik']
+all_vax = ['covaxin', 'sinopharm', 'sinovac', 'moderna', 'pfizer', 'astrazeneca', 'sputnik']
 
 def filtered_input_vax(vax):
     positive = vax[(vax['sentiment'] == 'Positive') | (vax['sentiment'] == 'positive')].sort_values(by='date').reset_index()
@@ -95,11 +95,11 @@ def filtered_input_vax_base_on_tweets_timeline(vax):
                 'negative':neg_data_list,
                 'neutral':neu_data_list
                 }
-    json_data_sentiment = json.dumps(new_json)
-    return  json_data_sentiment
+    return  new_json
 
-def filtered_all_base_on_tweets_timeline(df):
-
+def filtered_all_base_on_tweets_timeline():
+    
+    df = pd.read_csv("data/vax_tweets_sentiment.csv" ,header=0)
     df = df.dropna()
 
     # filter to positive negative and neutral. All value sort by date and reset the index.
@@ -154,8 +154,7 @@ def filtered_all_base_on_tweets_timeline(df):
                 'negative':neg_data_list,
                 'neutral':neu_data_list
                 }
-    json_data_sentiment = json.dumps(new_json)
-    return  json_data_sentiment
+    return  new_json
 
 # covaxin = filtered_input_vax_base_on_tweets_timeline('sinovac')
 # all_data = filtered_all_base_on_tweets_timeline(df)

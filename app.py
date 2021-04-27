@@ -6,12 +6,14 @@ from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from flask_pymongo import PyMongo
 from classify import analysis
-from analyze import filtered_input_vax_base_on_tweets_timeline
+from analyze import filtered_input_vax_base_on_tweets_timeline, filtered_all_base_on_tweets_timeline
 import json
 import threading
+from flask_restful import Api, Resource
 
 
 app = Flask(__name__)
+api = Api(app)
 app.config["MONGO_URI"] = "mongodb+srv://poomiix9:poom2542@cluster0.ta2my.mongodb.net/Comment?retryWrites=true&w=majority"
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config["DEBUG"] = True
@@ -33,6 +35,10 @@ def home():
         data = {}
         return render_template("result.html", result=result, neutral=neutral, positive=positive, negative=negative, url="static/images/new_plot.png")
         
+    return render_template("home.html")
+
+@app.route("/", methods=['GET'])
+def analyze():
     return render_template("home.html")
 
 # plotgraph function in serverside and save pic to static  *** Now Using canvasJs in script to create piechart ***
@@ -65,45 +71,27 @@ def add_header(r):
     r.headers['Cache-Control'] = 'public, max-age=0'
     return r
 
-@app.route("/api/analyze/", methods=['GET'])
-def analyze():
-    data = filtered_input_vax_base_on_tweets_timeline('sinovac')
-    return  data
-    
-# def ClassifyView():
+class InputTimeline(Resource):
+    def get(self, vax):
+        data = filtered_input_vax_base_on_tweets_timeline(vax)
+        return jsonify(data)
 
-# star = mongo.db.stars
-#   name = request.json['name']
-#   distance = request.json['distance']
-#   star_id = star.insert({'name': name, 'distance': distance})
-#   new_star = star.find_one({'_id': star_id })
-#   output = {'name' : new_star['name'], 'distance' : new_star['distance']}
-#   return jsonify({'result' : output})
+class Timeline(Resource):
+    def get(self):
+        data = filtered_all_base_on_tweets_timeline()
+        return jsonify(data)
 
+# class Timeline(Resource):
+#     def get(self, df):
+#         data = filtered_all_vax_base_on_tweets_timeline(df)
+#         return jsonify(data)
+
+
+
+api.add_resource(InputTimeline, '/inputtimeline/<vax>')
+# api.add_resource(Timeline, '/timeline/<df>')
+api.add_resource(Timeline, '/timeline')
 
 if __name__ == '__main__':
     app.debug = True
     app.run(threaded=True)
-
-# books = [
-#     {'id': 0,
-#      'title': 'A Fire Upon the Deep',
-#      'author': 'Vernor Vinge',
-#      'first_sentence': 'The coldsleep itself was dreamless.',
-#      'year_published': '1992'},
-#     {'id': 1,
-#      'title': 'The Ones Who Walk Away From Omelas',
-#      'author': 'Ursula K. Le Guin',
-#      'first_sentence': 'With a clamor of bells that set the swallows soaring, the Festival of Summer came to the city Omelas, bright-towered by the sea.',
-#      'published': '1973'},
-#     {'id': 2,
-#      'title': 'Dhalgren',
-#      'author': 'Samuel R. Delany',
-#      'first_sentence': 'to wound the autumnal city.',
-#      'published': '1975'}
-# ]
-
-# A route to return all of the available entries in our catalog.
-# @app.route('/api/book', methods=['GET'])
-# def api_all():
-#     return jsonify(books)
