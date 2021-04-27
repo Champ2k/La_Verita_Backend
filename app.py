@@ -37,9 +37,9 @@ def home():
         
     return render_template("home.html")
 
-@app.route("/", methods=['GET'])
+@app.route("/analysis", methods=['GET'])
 def analyze():
-    return render_template("home.html")
+    return render_template("timeline_analysis.html")
 
 # plotgraph function in serverside and save pic to static  *** Now Using canvasJs in script to create piechart ***
 def plotgraph(neutral,positive,negative):

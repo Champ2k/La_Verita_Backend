@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>La_Verita</title>
+  </head>
+  <body>
+    <a href="{{ url_for("home")}}"><button>Home</button></a>
+      <label for="inputvax">Choose a vaccine:</label>
+      <select id="inputvax" name="inputVax">
+        <option value="covaxin">Covaxin</option>
+        <option value="sinopharm">Sinopharm</option>
+        <option value="sinovac">Sinovac</option>
+        <option value="moderna">Moderna</option>
+        <option value="pfizer">Pfizer</option>
+        <option value="astrazeneca">Astrazeneca</option>
+        <option value="sputnik">Sputnik</option>
+      </select>
+      <button type="submit" onclick="inPutTimelineChart()">Analyze Select Timeline</button>
+      <button type="submit" onclick="allTimelineChart()">Analyze All Vaccine Timeline</button>
+      <button type="submit" onclick="Clear()">Clear</button>
+    <div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
+  </body>
+  <script>
+    function Clear(){
+      let chartJS = document.getElementById('chartContainer')
+      chartJS.style.visibility = "hidden"
+    }
+  </script>
+  <script>
+    function allTimelineChart(){
+      async function fetchData() {
+      let chartJS = document.getElementById('chartContainer')
+      chartJS.style.visibility = "visible"
+      const data = await fetch(`http://127.0.0.1:5000/timeline`,{
+        method:'GET',})
+        const filteredData = await data.json();
+
+        data_pos = []
+        data_neg = []
+        data_neu = []
+
+        for(let i=0; i < (filteredData['positive'][0].length); i++){
+          data_pos.push({x:new Date(filteredData['positive'][1][i]), y:filteredData['positive'][0][i]})
+        }
+        for(let i=0; i < (filteredData['negative'][0].length); i++){
+          data_neg.push({x:new Date(filteredData['negative'][1][i]), y:filteredData['negative'][0][i]})
+        }
+        for(let i=0; i < (filteredData['neutral'][0].length); i++){
+          data_neu.push({x:new Date(filteredData['neutral'][1][i]), y:filteredData['neutral'][0][i]})
+        }
+        var chart = new CanvasJS.Chart("chartContainer", {
+        title: {
+          text: `Tweet timeline of all vaccine`
+        },
+        axisX: {
+          valueFormatString: "DD MMM YYYY"
+        },
+        axisY2: {
+          title: "Tweet",
+          suffix: "Tweets"
+        },
+        toolTip: {
+          shared: true
+        },
+        legend: {
+          cursor: "pointer",
+          verticalAlign: "top",
+          horizontalAlign: "center",
+          dockInsidePlotArea: true,
+          itemclick: toogleDataSeries
+        },
+        data: [{
+          type:"line",
+          axisYType: "secondary",
+          name: "Positive",
+          showInLegend: true,
+          markerSize: 0,
+          yValueFormatString: "#,### Tweets",
+          dataPoints: data_pos
+        },
+        {
+          type: "line",
+          axisYType: "secondary",
+          name: "Negative",
+          showInLegend: true,
+          markerSize: 0,
+          yValueFormatString: "#,### Tweets",
+          dataPoints: data_neg
+        },
+        {
+          type: "line",
+          axisYType: "secondary",
+          name: "Neutral",
+          showInLegend: true,
+          markerSize: 0,
+          yValueFormatString: "#,### Tweets",
+          dataPoints: data_neu
+        },
+        ]
+      });
+      chart.render();
+
+      function toogleDataSeries(e){
+        if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+          e.dataSeries.visible = false;
+        } else{
+          e.dataSeries.visible = true;
+        }
+        chart.render();
+      }
+    }
+    fetchData()
+    }
+  </script>
+  <script>
+      function inPutTimelineChart() {
+        async function fetchData() {
+
+          let chartJS = document.getElementById('chartContainer')
+          chartJS.style.visibility = "visible"
+
+          let vax = document.getElementById('inputvax').value
+          
+          const data = await fetch(`http://127.0.0.1:5000/inputtimeline/${vax}`,{
+              method:'GET',})
+          const filteredData = await data.json();
+
+          data_pos = []
+          data_neg = []
+          data_neu = []
+
+          for(let i=0; i < (filteredData['positive'][0].length); i++){
+            data_pos.push({x:new Date(filteredData['positive'][1][i]), y:filteredData['positive'][0][i]})
+          }
+          for(let i=0; i < (filteredData['negative'][0].length); i++){
+            data_neg.push({x:new Date(filteredData['negative'][1][i]), y:filteredData['negative'][0][i]})
+          }
+          for(let i=0; i < (filteredData['neutral'][0].length); i++){
+            data_neu.push({x:new Date(filteredData['neutral'][1][i]), y:filteredData['neutral'][0][i]})
+          }
+          var chart = new CanvasJS.Chart("chartContainer", {
+          title: {
+            text: `Tweet timeline of ${vax} vaccine`
+          },
+          axisX: {
+            valueFormatString: "DD MMM YYYY"
+          },
+          axisY2: {
+            title: "Tweet",
+            suffix: "Tweets"
+          },
+          toolTip: {
+            shared: true
+          },
+          legend: {
+            cursor: "pointer",
+            verticalAlign: "top",
+            horizontalAlign: "center",
+            dockInsidePlotArea: true,
+            itemclick: toogleDataSeries
+          },
+          data: [{
+            type:"line",
+            axisYType: "secondary",
+            name: "Positive",
+            showInLegend: true,
+            markerSize: 0,
+            yValueFormatString: "#,### Tweets",
+            dataPoints: data_pos
+          },
+          {
+            type: "line",
+            axisYType: "secondary",
+            name: "Negative",
+            showInLegend: true,
+            markerSize: 0,
+            yValueFormatString: "#,### Tweets",
+            dataPoints: data_neg
+          },
+          {
+            type: "line",
+            axisYType: "secondary",
+            name: "Neutral",
+            showInLegend: true,
+            markerSize: 0,
+            yValueFormatString: "#,### Tweets",
+            dataPoints: data_neu
+          },
+          ]
+        });
+        chart.render();
+  
+        function toogleDataSeries(e){
+          if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+            e.dataSeries.visible = false;
+          } else{
+            e.dataSeries.visible = true;
+          }
+          chart.render();
+        }
+      }
+      fetchData()
+  }
+    </script>
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</html>
