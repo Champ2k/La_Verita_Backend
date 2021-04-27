@@ -7,6 +7,7 @@ from flask_cors import CORS
 from flask_pymongo import PyMongo
 from classify import analysis
 from analyze import filtered_input_vax_base_on_tweets_timeline
+import json
 import threading
 
 
@@ -25,7 +26,7 @@ def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
 
 @app.route("/", methods=['GET', 'POST'])
-def hello():
+def home():
     if request.method == "POST":
         inputword = request.form.get("inputText")
         result,neutral,positive,negative = analysis(inputword)
@@ -52,12 +53,16 @@ def ClassifyView():
 
 # No caching at all for API endpoints.
 @app.after_request
-def add_header(response):
-    # response.cache_control.no_store = True
-    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '-1'
-    return response
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
 @app.route("/api/analyze", methods=['GET'])
 def analyze():
