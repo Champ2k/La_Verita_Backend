@@ -78,7 +78,7 @@ def analysis(inputtext):
     best_model = keras.models.load_model("model/best_model5_mix_suff.hdf5")
     text = inputtext
     result, percentage = sentiment_analysis(tokenizer, text, best_model)
-    neutralpercentage = str(percentage[0])
-    positivepercentage = str(percentage[1])
-    negativepercentage = str(percentage[2])
+    neutralpercentage = percentage[0]
+    positivepercentage = percentage[1]
+    negativepercentage = percentage[2]
     return result, neutralpercentage, positivepercentage, negativepercentage

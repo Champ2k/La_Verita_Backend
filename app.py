@@ -30,11 +30,12 @@ def home():
     if request.method == "POST":
         inputword = request.form.get("inputText")
         result,neutral,positive,negative = analysis(inputword)
-        thread = threading.Thread(target=plotgraph(neutral,positive,negative))
-        thread.start()
+        data = {}
         return render_template("result.html", result=result, neutral=neutral, positive=positive, negative=negative, url="static/images/new_plot.png")
         
     return render_template("home.html")
+
+# plotgraph function in serverside and save pic to static  *** Now Using canvasJs in script to create piechart ***
 def plotgraph(neutral,positive,negative):
     labels = 'neutral','positive','negative'
     sizes = [neutral,positive,negative]
@@ -64,7 +65,7 @@ def add_header(r):
     r.headers['Cache-Control'] = 'public, max-age=0'
     return r
 
-@app.route("/api/analyze", methods=['GET'])
+@app.route("/api/analyze/", methods=['GET'])
 def analyze():
     data = filtered_input_vax_base_on_tweets_timeline('sinovac')
     return  data
