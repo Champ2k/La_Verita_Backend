@@ -4,6 +4,9 @@
 <head>
   <meta charset="utf-8">
   <title>Analysis</title>
+  <link rel="stylesheet" href="../static/css/navbar.css">
+  <link rel="stylesheet" href="../static/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <script>
   window.onload = function () {
@@ -48,12 +51,18 @@
 
 <body>
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-  <a href="{{ url_for("home")}}"><button>Home</button></a>
+  <div class="topnav">
+    <a class="active" href="{{ url_for("home")}}">Home</a>
+    <a href="{{ url_for("analyze")}}">Analyze Timeline</a>
+    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
   <div id="inputform" style="text-align: center">
     <form action="{{ url_for("home")}}" method="post">
       <label for="inputtext">Input Text:</label>
       <input type="text" id="inputtext" name="inputText" placeholder="text">
-      <button type="submit">Analysis</button>
+      <button class="myButton" type="submit">Analysis</button>
     </form>
   </div>
   <div id="result" style="text-align: center">
@@ -78,5 +87,16 @@
   <div id="chartContainer" style="height: 370px; width: 100%;"></div>
   <!-- <img id="resultChart" src={{url}} alt="Chart" height="30%" width="30%"> -->
 </body>
+<script>
+  /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
+function myFunction() {
+  var x = document.getElementById("myTopnav");
+  if (x.className === "topnav") {
+    x.className += " responsive";
+  } else {
+    x.className = "topnav";
+  }
+}
+</script>
 
 </html>

@@ -1,0 +1,119 @@
+#inputform {
+    padding-top: 30px;
+}
+
+input[type=text] {
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 1px solid rgb(0, 0, 0); 
+    background-color: rgba(247, 228, 228, 0.267);
+    color: rgb(90 82 73); 
+    border-radius: 10px;
+    font-size: 18px; 
+    line-height: 18px; 
+    padding: 9px; 
+    border-radius: 10px; 
+    font-family: "Courier New", Courier, monospace; 
+    font-weight: 700; 
+    text-decoration: none solid rgb(68, 68, 68); 
+    font-style: normal; 
+    font-variant: normal; 
+    text-transform: none; 
+  }
+
+#chartContainer {
+    padding-top: 30px;
+}
+.myButton {
+    color: rgb(90 82 73); 
+    font-size: 18px; 
+    line-height: 18px; 
+    padding: 9px; 
+    border-radius: 10px; 
+    font-family: "Courier New", Courier, monospace; 
+    font-weight: 700; 
+    text-decoration: none solid rgb(68, 68, 68); 
+    font-style: normal; 
+    font-variant: normal; 
+    text-transform: none; 
+    background-color: rgba(247, 228, 228, 0.74);
+    /* background-image: linear-gradient(rgb(255, 255, 255) 0%, rgb(255, 255, 255) 50%, rgb(255, 255, 255) 100%);  */
+    border: 2px solid rgb(0, 0, 0); 
+    display: inline-block;}
+.myButton:hover {
+    background: #FFFFFF; } 
+.myButton:active {
+    background: #FFFFFF; }
+
+.label-select{
+    font-family: "Courier New", Courier, monospace; 
+    font-weight: 700; 
+    text-decoration: none solid rgb(68, 68, 68); 
+    font-style: normal; 
+    font-variant: normal; 
+    text-transform: none; 
+}
+.padding-select{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+select {
+    font-family: "Courier New", Courier, monospace; 
+    font-weight: 700; 
+    text-decoration: none solid rgb(68, 68, 68); 
+    font-style: normal; 
+    font-variant: normal; 
+    text-transform: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: 0;
+    box-shadow: none;
+    border: 0 !important;
+    background: #2c3e50;
+    }
+
+    /* Remove IE arrow */
+select::-ms-expand {
+    display: none;
+    }
+
+    /* Custom Select */
+.select {
+    position: relative;
+    display: flex;
+    width: 20em;
+    height: 3em;
+    line-height: 3;
+    background: #2c3e50;
+    overflow: hidden;
+    border-radius: .25em;
+    margin: auto;
+    }
+select {
+    flex: 1;
+    padding: 0 .5em;
+    color: #fff;
+    cursor: pointer;
+    }
+    /* Arrow */
+.select::after {
+    content: '\25BC';
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 1em;
+    background: #34495e;
+    cursor: pointer;
+    pointer-events: none;
+    -webkit-transition: .25s all ease;
+    -o-transition: .25s all ease;
+    transition: .25s all ease;
+    }
+    /* Transition */
+.select:hover::after {
+    color: #f39c12;
+    }
+      

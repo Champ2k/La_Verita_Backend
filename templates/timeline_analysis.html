@@ -3,11 +3,24 @@
   <head>
     <meta charset="utf-8">
     <title>La_Verita</title>
+    <link rel="stylesheet" href="../static/css/navbar.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
-    <a href="{{ url_for("home")}}"><button>Home</button></a>
-      <label for="inputvax">Choose a vaccine:</label>
+    <div class="topnav">
+      <a class="active" href="{{ url_for("home")}}">Home</a>
+      <a href="{{ url_for("analyze")}}">Analyze by Timeline</a>
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+    <div id="inputform" style="text-align: center">
+      <label class="label-select" for="inputvax">Choose a vaccine:</label>
+      <div class="padding-select">
+      <div class="select">
       <select id="inputvax" name="inputVax">
+        <option selected disabled>Vaccine</option>
         <option value="covaxin">Covaxin</option>
         <option value="sinopharm">Sinopharm</option>
         <option value="sinovac">Sinovac</option>
@@ -16,9 +29,12 @@
         <option value="astrazeneca">Astrazeneca</option>
         <option value="sputnik">Sputnik</option>
       </select>
-      <button type="submit" onclick="inPutTimelineChart()">Analyze Select Timeline</button>
-      <button type="submit" onclick="allTimelineChart()">Analyze All Vaccine Timeline</button>
-      <button type="submit" onclick="Clear()">Clear</button>
+    </div>
+    </div>
+      <button class="myButton" type="submit" onclick="inPutTimelineChart()">Analyze Select Timeline</button>
+      <button class="myButton" type="submit" onclick="allTimelineChart()">Analyze All Vaccine Timeline</button>
+      <button class="myButton" type="submit" onclick="Clear()">Clear</button>
+    </div>
     <div id="chartContainer" style="height: 370px; max-width: 920px; margin: 0px auto;"></div>
   </body>
   <script>
@@ -203,5 +219,16 @@
       fetchData()
   }
     </script>
+  <script>
+    /* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
+  function myFunction() {
+    var x = document.getElementById("myTopnav");
+    if (x.className === "topnav") {
+      x.className += " responsive";
+    } else {
+      x.className = "topnav";
+    }
+}
+  </script>
   <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 </html>
