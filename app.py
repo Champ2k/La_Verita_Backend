@@ -33,7 +33,7 @@ def home():
         inputword = request.form.get("inputText")
         result,neutral,positive,negative = analysis(inputword)
         data = {}
-        return render_template("result.html", result=result, neutral=neutral, positive=positive, negative=negative, url="static/images/new_plot.png")
+        return render_template("result.html", result=result, neutral=neutral, positive=positive, negative=negative, inputword=inputword)
         
     return render_template("home.html")
 
