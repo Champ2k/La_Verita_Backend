@@ -54,13 +54,13 @@ class AnalysisResult(db.Document):
         }
 
 
-class Hastag(db.Document):
-    hastag = db.StringField()
+class Hashtag(db.Document):
+    hashtag = db.StringField()
 
 
 class TweetComment(db.Document):
     comment = db.StringField()
-    hastag = db.ListField(db.ReferenceField(Hastag))
+    hashtag = db.ListField(db.ReferenceField(Hashtag))
     date = db.DateTimeField(required=False)
     user = db.StringField()
     sentiment = db.StringField()
@@ -68,7 +68,7 @@ class TweetComment(db.Document):
     def to_json(self):
         return {
             "comment": self.comment,
-            "hastag": self.hastag,
+            "hashtag": self.hashtag,
             "date": self.date,
             "user": self.user,
             "sentiment": self.sentiment,
@@ -78,21 +78,6 @@ class TweetComment(db.Document):
 @app.errorhandler(404)
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
-
-
-# @app.route("/", methods=['GET', 'POST'])
-# def home():
-#     if request.method == "POST":
-#         inputword = request.form.get("inputText")
-#         result, neutral, positive, negative = analysis(inputword)
-#         # analysis_result = AnalysisResult(
-#         #     result=result, neutral=neutral, positive=positive, negative=negative, inputword=inputword)
-#         # analysis_result.save()
-#         # return jsonify(analysis_result.to_json())
-#         return render_template("result.html", result=result, neutral=neutral, positive=positive, negative=negative, inputword=inputword)
-
-#     return render_template("home.html")
-
 
 # arg = inputword
 @app.route("/analysis", methods=["GET"])
@@ -114,45 +99,18 @@ def get_analyze():
 @app.route("/tweets", methods=["GET"])
 def get_tweets():
     if request.method == "GET":
-        limit_tweet = request.args.get("limit")
-        hastag = request.args.get("hastag")
-
-        if limit_tweet and hastag:
+        limit_tweet = request.args.get("limit", default=100, type=int)
+        hashtag = request.args.get("hashtag", default=None, type=str)
+        if hashtag:
             return jsonify(
-                {"tweets": AnalysisResult.objects(result__iexact=hastag).limit(int(limit_tweet))}
+                {
+                    "tweets": TweetComment.objects(hashtag__iexact=hashtag).limit(
+                        limit_tweet
+                    )
+                }
             )
-        elif limit_tweet:
-            return jsonify({"tweets": AnalysisResult.limit(int(limit_tweet))})
-        elif hastag:
-            return jsonify({"tweets": AnalysisResult.objects(result__iexact=hastag).limit(100)})
         else:
-            return jsonify({"tweets": AnalysisResult.objects.limit(100)})
-
-
-# @app.route("/timeline_analysis", methods=['GET'])
-# def timeline_analysis():
-#     return render_template("timeline_analysis.html")
-
-# plotgraph function in serverside and save pic to static  *** Now Using canvasJs in script to create piechart ***
-
-
-# def plotgraph(neutral, positive, negative):
-#     labels = 'neutral', 'positive', 'negative'
-#     sizes = [neutral, positive, negative]
-#     explode = (0, 0, 0)
-#     fig1, ax1 = plt.subplots()
-#     ax1.pie(sizes, explode=explode, labels=labels,
-#             autopct='%1.1f%%', shadow=True, startangle=90)
-#     # Equal aspect ratio ensures that pie is drawn as a circle.
-#     ax1.axis('equal')
-#     plt.savefig('static/images/new_plot.png')
-
-
-# @app.route("/post_model", methods=['GET'])
-# def ClassifyView():
-#     tweet = mongo.db.Twitter_Comment
-#     tweet.insert_many(books)
-#     return "Inserted"
+            return jsonify({"tweets": TweetComment.objects.limit(limit_tweet)})
 
 # No caching at all for API endpoints.
 @app.after_request
@@ -166,28 +124,6 @@ def add_header(r):
     r.headers["Expires"] = "0"
     r.headers["Cache-Control"] = "public, max-age=0"
     return r
-
-
-# class InputTimeline(Resource):
-#     def get(self, vax):
-#         data = filtered_input_vax_base_on_tweets_timeline(vax)
-#         return jsonify(data)
-
-
-# class Timeline(Resource):
-#     def get(self):
-#         data = filtered_all_base_on_tweets_timeline()
-#         return jsonify(data)
-
-# class Timeline(Resource):
-#     def get(self, df):
-#         data = filtered_all_vax_base_on_tweets_timeline(df)
-#         return jsonify(data)
-
-
-# api.add_resource(InputTimeline, '/inputtimeline/<vax>')
-# api.add_resource(Timeline, '/timeline/<df>')
-# api.add_resource(Timeline, '/timeline')
 
 if __name__ == "__main__":
     app.debug = True
