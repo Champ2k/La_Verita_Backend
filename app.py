@@ -13,6 +13,8 @@ from flask import Flask, request, jsonify, render_template
 import matplotlib.pyplot as plt
 import matplotlib
 
+from model import *
+
 matplotlib.use("Agg")
 # from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 
@@ -34,54 +36,13 @@ api = Api(app)
 
 CORS(app)
 
-
-class AnalysisResult(db.Document):
-    result = db.StringField()
-    neutral = db.DecimalField(min_value=0, precision=2)
-    positive = db.DecimalField(min_value=0, precision=2)
-    negative = db.DecimalField(min_value=0, precision=2)
-    inputword = db.StringField()
-
-    def to_json(self):
-        return {
-            "result": self.result,
-            "sentiment": {
-                "neutral": self.neutral,
-                "positive": self.positive,
-                "negative": self.negative,
-            },
-            "inputword": self.inputword,
-        }
-
-
-class Hashtag(db.Document):
-    hashtag = db.StringField()
-
-
-class TweetComment(db.Document):
-    comment = db.StringField()
-    hashtag = db.ListField(db.ReferenceField(Hashtag))
-    date = db.DateTimeField(required=False)
-    user = db.StringField()
-    sentiment = db.StringField()
-
-    def to_json(self):
-        return {
-            "comment": self.comment,
-            "hashtag": self.hashtag,
-            "date": self.date,
-            "user": self.user,
-            "sentiment": self.sentiment,
-        }
-
-
 @app.errorhandler(404)
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
 
 # arg = inputword
 @app.route("/analysis", methods=["GET"])
-def get_analyze():
+def analyze():
     if request.method == "GET":
         inputword = request.args.get("inputword")
         result, neutral, positive, negative = analysis(inputword)
@@ -96,8 +57,8 @@ def get_analyze():
         return jsonify(analysis_result.to_json())
 
 
-@app.route("/tweets", methods=["GET"])
-def get_tweets():
+@app.route("/tweets", methods=["GET", "POST"])
+def tweets():
     if request.method == "GET":
         limit_tweet = request.args.get("limit", default=100, type=int)
         hashtag = request.args.get("hashtag", default=None, type=str)
