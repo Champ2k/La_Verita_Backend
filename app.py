@@ -32,6 +32,7 @@ app.config[
 db = MongoEngine()
 db.init_app(app)
 
+
 api = Api(app)
 
 CORS(app)
@@ -40,7 +41,7 @@ CORS(app)
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
 
-# arg = inputword
+# # arg = inputword
 @app.route("/analysis", methods=["GET"])
 def analyze():
     if request.method == "GET":
