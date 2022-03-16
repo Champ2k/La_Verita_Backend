@@ -72,10 +72,10 @@ def sentiment_analysis(tokenizer, text, best_model):
 
 def analysis(inputtext):
     # load tokenizer
-    with open('tokenizer/tokenizer2_mix.pickle', 'rb') as handle:
+    with open('tokenizer/new_tokenizer.pickle', 'rb') as handle:
         tokenizer = pickle.load(handle)
 
-    best_model = keras.models.load_model("model/best_model5_mix_suff.hdf5")
+    best_model = keras.models.load_model("model/new_best_vaccine_model_adam_opt.hdf5")
     text = inputtext
     result, percentage = sentiment_analysis(tokenizer, text, best_model)
     neutralpercentage = percentage[0]
