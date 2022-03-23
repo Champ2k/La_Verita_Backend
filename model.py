@@ -18,15 +18,16 @@ class AnalysisResult(db.Document):
             "inputword": self.inputword,
         }
 
-class Hashtag(db.Document):
-    hashtag = db.StringField()
+# class Hashtag(db.Document):
+#     hashtag = db.ListField()
 
 
 class TweetComment(db.Document):
     comment = db.StringField()
-    hashtag = db.ListField(db.ReferenceField(Hashtag))
+    # hashtag = db.ListField(db.ReferenceField(Hashtag))
+    hashtag = db.ListField()
     date = db.DateTimeField(required=False)
-    user = db.StringField()
+    user = db.StringField(required=False)
     sentiment = db.StringField()
 
     def to_json(self):

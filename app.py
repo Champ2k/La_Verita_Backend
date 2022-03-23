@@ -1,3 +1,4 @@
+from datetime import datetime
 from weakref import ReferenceType
 from flask_restful import Api, Resource
 import threading
@@ -12,6 +13,9 @@ from flask_cors import CORS
 from flask import Flask, request, jsonify, render_template
 import matplotlib.pyplot as plt
 import matplotlib
+import pandas as pd
+
+import ast
 
 from model import *
 
@@ -37,9 +41,11 @@ api = Api(app)
 
 CORS(app)
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
+
 
 # # arg = inputword
 @app.route("/analysis", methods=["GET"])
@@ -74,6 +80,28 @@ def tweets():
         else:
             return jsonify({"tweets": TweetComment.objects.limit(limit_tweet)})
 
+
+@app.route("/addTweets", methods=["GET"])
+def addTweets():
+    if request.method == "GET":
+        loop_range = request.args.get("range", default=10, type=str)
+        tweets_data = pd.read_csv("./data/vaccination_tweets_with_sentiment_hashtags.csv")
+        df = pd.DataFrame(tweets_data)
+        obj_list = []
+        for i in range(loop_range):
+            sentence = df['text'][i]
+            hashtag = tweets_data['hashtag'][i]
+            hashtag_to_list = ast.literal_eval(hashtag)
+            date = df['date'][i]
+            sentiment = df['sentiment'][i]
+            tweets_comment = TweetComment(
+                comment=sentence, hashtag=hashtag_to_list, date=date, sentiment=sentiment
+            )
+            tweets_comment.save()
+            obj_list.append(tweets_comment)
+        return jsonify(obj_list)
+
+
 # No caching at all for API endpoints.
 @app.after_request
 def add_header(r):
@@ -86,6 +114,7 @@ def add_header(r):
     r.headers["Expires"] = "0"
     r.headers["Cache-Control"] = "public, max-age=0"
     return r
+
 
 if __name__ == "__main__":
     app.debug = True
