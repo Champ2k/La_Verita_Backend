@@ -14,6 +14,7 @@ from flask import Flask, request, jsonify, render_template
 import matplotlib.pyplot as plt
 import matplotlib
 import pandas as pd
+import re
 
 import ast
 
@@ -70,9 +71,11 @@ def tweets():
         limit_tweet = request.args.get("limit", default=100, type=int)
         hashtag = request.args.get("hashtag", default=None, type=str)
         if hashtag:
+            regex = re.compile(hashtag, re.IGNORECASE)
+
             return jsonify(
                 {
-                    "tweets": TweetComment.objects(hashtag__iexact=hashtag).limit(
+                    "tweets": TweetComment.objects(hashtag=regex).limit(
                         limit_tweet
                     )
                 }
