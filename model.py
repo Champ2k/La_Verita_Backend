@@ -1,10 +1,11 @@
 from app import db
 
+
 class AnalysisResult(db.Document):
     result = db.StringField()
-    neutral = db.DecimalField(min_value=0, precision=2)
-    positive = db.DecimalField(min_value=0, precision=2)
-    negative = db.DecimalField(min_value=0, precision=2)
+    neutral = db.DecimalField(min_value=0, precision=3)
+    positive = db.DecimalField(min_value=0, precision=3)
+    negative = db.DecimalField(min_value=0, precision=3)
     inputword = db.StringField()
 
     def to_json(self):
@@ -17,6 +18,7 @@ class AnalysisResult(db.Document):
             },
             "inputword": self.inputword,
         }
+
 
 # class Hashtag(db.Document):
 #     hashtag = db.ListField()
@@ -37,4 +39,21 @@ class TweetComment(db.Document):
             "date": self.date,
             "user": self.user,
             "sentiment": self.sentiment,
+        }
+
+
+class OverallSentiment(db.Document):
+    hashtag = db.StringField()
+    countTweet = db.IntField()
+    countPositive = db.IntField()
+    countNegative = db.IntField()
+    countNeutral = db.IntField()
+
+    def to_json(self):
+        return {
+            "hashtag": self.hashtag,
+            "countTweet": self.countTweet,
+            "countPositive": self.countPositive,
+            "countNegative": self.countNegative,
+            "countNeutral": self.countNeutral,
         }

@@ -66,7 +66,7 @@ def sentiment_analysis(tokenizer, text, best_model):
     percent = best_model.predict(test)*100
     list_percent = []
     for i in range(len(percent[0])):
-        list_percent.append(percent[0][i])
+        list_percent.append(round(percent[0][i], 2))
     result = sentiment_2[list_percent.index(max(list_percent))]
     return result, list_percent
 

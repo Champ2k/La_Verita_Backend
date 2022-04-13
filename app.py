@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest import result
 from weakref import ReferenceType
 from flask_restful import Api, Resource
 import threading
@@ -43,6 +44,22 @@ api = Api(app)
 CORS(app)
 
 
+def countOverallSentiment(list):
+    countNeutral = 0
+    countPositive = 0
+    countNegative = 0
+
+    for i in range(len(list)):
+        sentiment = list[i].sentiment.lower()
+        if sentiment == "neutral":
+            countNeutral += 1
+        elif sentiment == "positive":
+            countPositive += 1
+        elif sentiment == "negative":
+            countNegative += 1
+    return countNeutral, countPositive, countNegative
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
@@ -74,11 +91,7 @@ def tweets():
             regex = re.compile(hashtag, re.IGNORECASE)
 
             return jsonify(
-                {
-                    "tweets": TweetComment.objects(hashtag=regex).limit(
-                        limit_tweet
-                    )
-                }
+                {"tweets": TweetComment.objects(hashtag=regex).limit(limit_tweet)}
             )
         else:
             return jsonify({"tweets": TweetComment.objects.limit(limit_tweet)})
@@ -88,21 +101,49 @@ def tweets():
 def addTweets():
     if request.method == "GET":
         loop_range = request.args.get("range", default=10, type=str)
-        tweets_data = pd.read_csv("./data/vaccination_tweets_with_sentiment_hashtags.csv")
+        tweets_data = pd.read_csv(
+            "./data/vaccination_tweets_with_sentiment_hashtags.csv"
+        )
         df = pd.DataFrame(tweets_data)
         obj_list = []
         for i in range(loop_range):
-            sentence = df['text'][i]
-            hashtag = tweets_data['hashtag'][i]
+            sentence = df["text"][i]
+            hashtag = tweets_data["hashtag"][i]
             hashtag_to_list = ast.literal_eval(hashtag)
-            date = df['date'][i]
-            sentiment = df['sentiment'][i]
+            date = df["date"][i]
+            sentiment = df["sentiment"][i]
             tweets_comment = TweetComment(
-                comment=sentence, hashtag=hashtag_to_list, date=date, sentiment=sentiment
+                comment=sentence,
+                hashtag=hashtag_to_list,
+                date=date,
+                sentiment=sentiment,
             )
             tweets_comment.save()
             obj_list.append(tweets_comment)
         return jsonify(obj_list)
+
+
+@app.route("/overallSentiment", methods=["GET"])
+def overallSentiment():
+    if request.method == "GET":
+        hashtag = request.args.get("hashtag", default=None, type=str)
+        if hashtag:
+            regex = re.compile(hashtag, re.IGNORECASE)
+
+            listObjTweets = TweetComment.objects(hashtag=regex)
+        else:
+            listObjTweets = TweetComment.objects()
+
+        neu, pos, neg = countOverallSentiment(listObjTweets)
+        overallSentiment = OverallSentiment(
+            hashtag=hashtag if hashtag else "all",
+            countTweet=len(listObjTweets),
+            countPositive=pos,
+            countNegative=neg,
+            countNeutral=neu,
+        )
+        overallSentiment.save()
+        return jsonify(overallSentiment.to_json())
 
 
 # No caching at all for API endpoints.
