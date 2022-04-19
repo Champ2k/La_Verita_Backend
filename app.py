@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import pandas as pd
 import re
+import urllib.parse
 
 import ast
 
@@ -100,7 +101,7 @@ def tweets():
 @app.route("/addTweets", methods=["GET"])
 def addTweets():
     if request.method == "GET":
-        loop_range = request.args.get("range", default=10, type=str)
+        loop_range = request.args.get("range", default=10, type=int)
         tweets_data = pd.read_csv(
             "./data/vaccination_tweets_with_sentiment_hashtags.csv"
         )
@@ -111,20 +112,21 @@ def addTweets():
             hashtag = tweets_data["hashtag"][i]
             hashtag_to_list = ast.literal_eval(hashtag)
             date = df["date"][i]
-            sentiment = df["sentiment"][i]
+            # sentiment = df["sentiment"][i]
+            result, neutral, positive, negative = analysis(df["text"][i])
             tweets_comment = TweetComment(
                 comment=sentence,
                 hashtag=hashtag_to_list,
                 date=date,
-                sentiment=sentiment,
+                sentiment=result,
             )
             tweets_comment.save()
             obj_list.append(tweets_comment)
         return jsonify(obj_list)
 
 
-@app.route("/overallSentiment", methods=["GET"])
-def overallSentiment():
+@app.route("/countOverallSentiment", methods=["GET"])
+def countOverallSentiment():
     if request.method == "GET":
         hashtag = request.args.get("hashtag", default=None, type=str)
         if hashtag:
@@ -144,6 +146,14 @@ def overallSentiment():
         )
         overallSentiment.save()
         return jsonify(overallSentiment.to_json())
+
+@app.route("/getOverallSentiment", methods=["GET"])
+def getOverallSentiment():
+    if request.method == "GET":
+        hashtag = request.args.get("hashtag", default="all", type=str)
+        regex = re.compile(hashtag, re.IGNORECASE)
+        listObjTweets = OverallSentiment.objects(hashtag=regex)
+        return jsonify(listObjTweets)
 
 
 # No caching at all for API endpoints.
