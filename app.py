@@ -31,10 +31,9 @@ app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 app.config["DEBUG"] = True
 app.config["SECRET_KEY"] = "super-secret"
 
-# app.config["MONGO_URI"] = "mongodb+srv://poomiix9:poom2542@cluster0.ta2my.mongodb.net/Comment?retryWrites=true&w=majority"
 app.config[
     "MONGODB_HOST"
-] = "mongodb+srv://poomiix9:poom2542@cluster0.ta2my.mongodb.net/Comment?retryWrites=true&w=majority"
+] = "URL to connect to your data base"
 
 db = MongoEngine()
 db.init_app(app)
